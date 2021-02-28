@@ -13,4 +13,13 @@ module Baukis2
       Dir[Rails.root.join("cofig", "locales", "**", "*.{rb.yml}").to_s]
     config.i18n.default_locale = :ja
   end
+
+  config.generators do |g|
+    g.skip_routes true
+    g.helper false
+    g.assets false
+    g.test_framework :rspec
+    g.controller_specs false
+    g.view_specs false
+  end
 end
