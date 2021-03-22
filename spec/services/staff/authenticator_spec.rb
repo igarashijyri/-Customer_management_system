@@ -18,19 +18,19 @@ describe Staff::Authenticator do
       expect(Staff::Authenticator.new(staff_member).authenticate(nil)).to be_falsey
     end
 
-    example "停止フラグが立っているとき、falseを返す" do
+    example "停止フラグが立っていても、trueを返す" do
       staff_member = build(:staff_member, suspended: true)
-      expect(Staff::Authenticator.new(staff_member).authenticate(nil)).to be_falsey
+      expect(Staff::Authenticator.new(staff_member).authenticate("password")).to be_truthy
     end
 
     example "開始前のとき、falseを返す" do
       staff_member =  build(:staff_member, start_date: Date.tomorrow)
-      expect(Staff::Authenticator.new(staff_member).authenticate(nil)).to be_falsey
+      expect(Staff::Authenticator.new(staff_member).authenticate("password")).to be_falsey
     end
 
     example "終了後のとき、falseを返す" do
       staff_member = build(:staff_member, end_date: Date.today)
-      expect(Staff::Authenticator.new(staff_member).authenticate(nil)).to be_falsey
+      expect(Staff::Authenticator.new(staff_member).authenticate("password")).to be_falsey
     end
   end
 end

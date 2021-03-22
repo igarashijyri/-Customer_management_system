@@ -19,9 +19,14 @@ class Staff::SessionsController < Staff::Base
     # TODO: フォームからemailの値が送られなかった場合にundifind_method_errorになると思われるので、確認&修正が必要
     # TODO: このif文、意図がわかりづらいからStaff::Authenticatorと合わせて修正したい
     if Staff::Authenticator.new(staff_member).authenticate(@form.password)
-      session[:staff_member_id] = staff_member.id
-      flash.notice = "ログインしました。"
-      redirect_to :staff_root
+      if staff_member.suspended?
+        flash.now.alert = "アカウントが停止されています。"
+        render action: "new"
+      else
+        session[:staff_member_id] = staff_member.id
+        flash.notice = "ログインしました。"
+        redirect_to :staff_root 
+      end
     else
       flash.now.alert = "メールアドレスまたはパスワードが正しくありません。"
       render action: "new"
