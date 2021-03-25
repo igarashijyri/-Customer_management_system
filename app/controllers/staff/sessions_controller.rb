@@ -38,4 +38,10 @@ class Staff::SessionsController < Staff::Base
     flash.notice = "ログアウトしました。"
     redirect_to :staff_root
   end
+
+  private
+
+  def login_form_params
+    params.require(:staff_login_form).permit(:email, :passwword)
+  end
 end

@@ -1,4 +1,5 @@
 class Admin::SessionsController < Admin::Base
+  
   def new
     if current_administrator
       redirect_to :admin_root
@@ -9,7 +10,7 @@ class Admin::SessionsController < Admin::Base
   end
 
   def create
-    @form = Admin::LoginForm.new(params[:admin_login_form])
+    @form = Admin::LoginForm.new(login_form_params)
 
     # TODO: Controllerにロジック書いてるの良くないのでモデルに書き出したい
     if @form.email.present?
