@@ -1,4 +1,5 @@
 class Admin::SessionsController < Admin::Base
+  skip_before_action :authorize
   
   def new
     if current_administrator
@@ -25,6 +26,7 @@ class Admin::SessionsController < Admin::Base
         render action: "new"
       else
         session[:administrator_id] = administrator.id
+        session[:admin_last_access_time] = Time.current
         flash.notice = "ログインしました。"
         redirect_to :admin_root 
       end
@@ -38,5 +40,11 @@ class Admin::SessionsController < Admin::Base
     session.delete(:administrator_id)
     flash.notice = "ログアウトしました。"
     redirect_to :admin_root
+  end
+
+  private
+
+  def login_form_params
+    params.require(:admin_login_form).permit(:email, :password)
   end
 end
