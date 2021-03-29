@@ -1,4 +1,6 @@
 class Staff::AccountsController < Staff::Base
+  skip_before_action :check_timeout
+
   def show
     @staff_member = current_staff_member
   end

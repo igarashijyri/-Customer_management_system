@@ -1,5 +1,6 @@
 class Staff::SessionsController < Staff::Base
   skip_before_action :authorize
+  skip_before_action :check_timeout
 
   def new
     if current_staff_member
@@ -19,13 +20,16 @@ class Staff::SessionsController < Staff::Base
     end
 
     # TODO: このif文、意図がわかりづらいからStaff::Authenticatorと合わせて修正したい
+    # HACK: create!とかモデルで行うべき
     if Staff::Authenticator.new(staff_member).authenticate(@form.password)
       if staff_member.suspended?
+        staff_member.events.create!(type: "rejected")
         flash.now.alert = "アカウントが停止されています。"
         render action: "new"
       else
         session[:staff_member_id] = staff_member.id
         session[:last_access_time] = Time.current
+        staff_member.events.create!(type: "logged_in")
         flash.notice = "ログインしました。"
         redirect_to :staff_root 
       end
@@ -36,6 +40,11 @@ class Staff::SessionsController < Staff::Base
   end
 
   def destroy
+    # NOTE: すでにログアウトしている状態でdestroyが呼ばれる可能性があるため、ifで判断している
+    if current_staff_member
+      current_staff_member.events.create!(type: "logged_out") 
+    end
+
     session.delete(:staff_member_id)
     flash.notice = "ログアウトしました。"
     redirect_to :staff_root

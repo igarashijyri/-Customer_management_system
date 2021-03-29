@@ -15,7 +15,11 @@ Rails.application.routes.draw do
       root "top#index"
       get "login" => "sessions#new", as: :login
       resource :session, only: [ :create, :destroy ]
-      resources :staff_members
+      # staff_membersに紐づいたstaff_eventのみに対象を絞っている...多分。
+      resources :staff_members do
+        resources :staff_events, only: [ :index ]
+      end
+      resources :staff_events, only: [ :index ]
     end
   end
 
