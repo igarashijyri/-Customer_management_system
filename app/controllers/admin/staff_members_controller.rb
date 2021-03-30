@@ -3,6 +3,7 @@ class Admin::StaffMembersController < Admin::Base
 
   def index
     @staff_members = StaffMember.order(:familiy_name_kana, :given_name_kana)
+      .page(params[:page])
   end
 
   def show
