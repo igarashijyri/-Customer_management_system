@@ -50,6 +50,16 @@ RSpec.describe StaffMember, type: :model do
       expect(member).not_to be_valid
     end
 
+    example "アルファベッド表記のfamiliy_nameは有効" do
+      member = build(:staff_member, familiy_name: "Smith")
+      expect(member).to be_valid
+    end
+
+    example "記号を含むfamiliy_nameは無効" do
+      member = build(:staff_member, familiy_name: "試+験")
+      expect(member).not_to be_valid
+    end
+
     example "漢字を含むfamiliy_name_kanaは無効" do
       member = build(:staff_member, familiy_name_kana: "試験")
       expect(member).not_to be_valid
@@ -62,7 +72,7 @@ RSpec.describe StaffMember, type: :model do
 
     example "他の職員のメールアドレスと重複したemailは無効" do
       member1 = create(:staff_member)
-      member2 = build(:staff_member, email: member.email)
+      member2 = build(:staff_member, email: member1.email)
       expect(member2).not_to be_valid
     end
   end
