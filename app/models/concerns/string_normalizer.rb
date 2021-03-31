@@ -4,7 +4,6 @@ module StringNormalizer
   extend ActiveSupport::Concern
 
   def normalize_as_email(text)
-    binding.pry
     NKF.nkf("-W -w -Z1", text).strip if text
   end
 
