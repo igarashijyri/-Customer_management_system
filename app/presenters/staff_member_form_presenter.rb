@@ -7,8 +7,7 @@ class StaffMemberFormPresenter < FormPresenter
 
   def full_name_block(name1, name2, label_text, options = {})
     markup(:div, class: "input-block") do |m|
-      m << label(name1, label_text,
-        class: options[:required] ? "required" : nil) 
+      m << decorated_label(name, label_text, options)
       m << text_field(name1, options)
       m << text_field(name2, options)
     end
@@ -19,5 +18,11 @@ class StaffMemberFormPresenter < FormPresenter
       m << check_box(:suspended)
       m << label(:suspended, "アカウント停止")
     end
+  end
+
+  private
+  
+  def decorated_label(name, label_text, options ={})
+    label(name, label_text, class: options[:required] ? "required" : nil)
   end
 end
